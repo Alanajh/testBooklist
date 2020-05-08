@@ -3,6 +3,10 @@ textarea{
   width: 100%;
 }
 
+mat-spinner {
+  margin: auto;
+}
+
 button{
  margin-right: 10px;
  margin-top: 10px;
