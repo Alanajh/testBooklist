@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+//import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
 import { MatInputModule} from '@angular/material/input';
 import { MatCardModule} from '@angular/material/card';
@@ -16,6 +16,8 @@ import { HeaderComponent } from "./header/HeaderComponent";
 import { PostListComponent} from "./posts/post-list/post-list.component";
 import { AppRoutingModule } from './app-routing.module';
 
+import {ReactiveFormsModule} from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MatInputModule,
