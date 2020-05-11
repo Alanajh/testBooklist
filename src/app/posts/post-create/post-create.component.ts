@@ -3,6 +3,7 @@ import { Post } from '../../posts/post.model';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { PostsService } from '../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { mimeType } from "./mime-type.validator";
 
 @Component({
   selector: 'app-post-create',
@@ -27,7 +28,10 @@ export class PostCreateComponent implements OnInit{
     this.form = new FormGroup({
       'title': new FormControl(null, {validators: [Validators.required, Validators.minLength(2)]}),
       'content': new FormControl(null, {validators: [Validators.required]}),
-      'image': new FormControl(null, {validators: [Validators.required]})
+      'image': new FormControl(null, {
+        validators: [Validators.required],
+      asyncValidators: [mimeType]
+    })
   });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if(paramMap.has('postId')){
@@ -38,15 +42,15 @@ export class PostCreateComponent implements OnInit{
         .subscribe(postData => {
           this.isLoading = false;
           this.post = {
-            id: postData._id, 
-            title: postData.title, 
+            id: postData._id,
+            title: postData.title,
             content: postData.content
           };
           this.form.setValue({
-            'title': this.post.title, 
+            'title': this.post.title,
             'content': this.post.content
           });
-        }); 
+        });
       }else{
         this.mode = 'create';
         this.postId = null;
@@ -71,7 +75,7 @@ export class PostCreateComponent implements OnInit{
     }
     this.isLoading = true;
     if (this.mode === 'create'){
-      this.postsService.addPost(this.form.value.title, this.form.value.content);
+      this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
     } else {
       this.postsService.updatePost(
         this.postId,
@@ -88,7 +92,7 @@ export class PostCreateComponent implements OnInit{
     };
     this.postsService.addPost(form.value.title, form.value.content);
     */
-    
+
     this.form.reset();
   }
 
