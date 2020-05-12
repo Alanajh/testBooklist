@@ -1,8 +1,31 @@
 const express = require("express");
+const multer = require('multer');
 const Post = require("../models/post");
 const router = express.Router();
 
-router.post("", (req, res, next) => {
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg'
+};
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error("Invalid mime type");
+    if(isValid){
+      error = null;
+    }
+    cb(null, "backend/images");
+  },
+  filename: (req, file, cb) => {
+    const name =file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null, name + '-' + Date.now() + '-' + ext);
+  }
+});
+
+router.post("", multer(storage).single("image"), (req, res, next) => {
     const posts = new Post({
       title: req.body.title,
       content: req.body.content
@@ -15,10 +38,10 @@ router.post("", (req, res, next) => {
     });
    // console.log(posts);
    // posts.save();
-    
+
       });
     });
-  
+
     router.put("/:id", (req, res, next) => {
       const post = new Post({
         _id: req.body.id,
@@ -29,7 +52,7 @@ router.post("", (req, res, next) => {
         res.status(200).json({message: "update successful"});
       });
     });
-    
+
   router.get("", (req, res, next) => {
   Post.find().then(documents => {
     res.status(200).json({
@@ -38,7 +61,7 @@ router.post("", (req, res, next) => {
       });
     });
   });
-  
+
   router.get("/:id", (req, res, next) => {
     Post.findById(req.params.id).then(post => {
       if(post) {
@@ -48,7 +71,7 @@ router.post("", (req, res, next) => {
        }
     })
   })
-  
+
   router.delete("/:id", (req, res, next) => {
     Post.deleteOne({ _id: req.params.id}).then(result => {
       console.log(result);
@@ -57,5 +80,5 @@ router.post("", (req, res, next) => {
     });
   });
 
-  
+
 module.exports = router;
